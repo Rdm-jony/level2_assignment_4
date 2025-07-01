@@ -9,7 +9,8 @@ const bookShema = new Schema<IBook>({
     isbn: { type: String, unique: [true, "isbn must be unique"], required: [true, "isbn is required"] },
     description: { type: String },
     copies: { type: Number, required: [true, "Book copies is required"], min: [0, "copies must be a non negative number"] },
-    available: { type: Boolean, default: true }
+    available: { type: Boolean, default: true },
+    image: { type: String, required: [true, 'image is required'] }
 }, {
     versionKey: false,
     timestamps: true

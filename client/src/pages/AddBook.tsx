@@ -17,10 +17,13 @@ import { AddBookFormShema, type IBook } from "@/type/addBooks_type"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ImageUp } from "lucide-react"
 import { Label } from "@/components/ui/label"
+import { useAddBookMutation, type IErrorResponse } from "@/redux/feature/book/bookApi"
+import { toast } from "sonner"
 
 
 
 export const AddBook = () => {
+    const [addBook] = useAddBookMutation()
     const form = useForm<IBook>({
         resolver: zodResolver(AddBookFormShema),
         defaultValues: {
@@ -29,14 +32,31 @@ export const AddBook = () => {
             isbn: '',
             description: '',
             copies: 0,
-            genre: undefined,
+            genre: 'FICTION',
             available: true,
         },
     })
     const bookImage = form.watch("image")
 
-    function onSubmit(values: IBook) {
-        console.log(values)
+    async function onSubmit(values: IBook) {
+        const formdata = new FormData()
+        for (const key in values) {
+            const value = values[key as keyof typeof values]
+            if (value instanceof File) {
+                formdata.append(key, value)
+            } else {
+                formdata.append(key, String(value))
+            }
+        }
+        try {
+            const response = await addBook(formdata).unwrap()
+            form.reset()
+            toast.success(response.message)
+        } catch (error: unknown) {
+            const err = error as IErrorResponse
+            toast.error(err?.data?.message)
+        }
+
     }
 
     return (
@@ -98,7 +118,7 @@ export const AddBook = () => {
                     name="genre"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Genre</FormLabel>
+                            <FormLabel>Select Genre</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                     <SelectTrigger className="w-full">

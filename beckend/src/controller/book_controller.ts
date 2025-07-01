@@ -18,21 +18,16 @@ bookRoutes.post("/", upload.single("image"), async (req: Request, res: Response)
         const response = await imagekit.upload({
             file: imageFile?.buffer,
             fileName: imageFile?.originalname,
-            extensions: [
-                {
-                    name: "remove-bg",
-                    options: {
-                        bg_color: "transparent",
-                        add_shadow: false,            // whether to add shadow under the subject
-                        semitransparency: true,
-                    }
-                }
-            ]
         })
-        console.log(response)
-        console.log(req.body)
-        // const data = await Book.create(body)
-        // res.status(201).json({ success: true, message: "Book created successfully", data })
+        if (!response.url) {
+            return res.status(500).json({
+                success: false,
+                message: "Image upload failed. No URL returned."
+            });
+        }
+
+        const data = await Book.create({...body,image:response.url})
+        res.status(201).json({ success: true, message: "Book created successfully", data })
     } catch (error: any) {
         console.log(error);
         const isDuplicateKey = error.code === 11000 || error?.cause?.code === 11000;;
