@@ -1,13 +1,38 @@
 import express, { json, Request, Response } from "express"
 import { Book } from "../model/book_model"
+import { imagekit } from "../utils/imageKit"
+import upload from "../middleware/middleware"
 
 export const bookRoutes = express.Router()
 
-bookRoutes.post("/", async (req: Request, res: Response): Promise<any> => {
+bookRoutes.post("/", upload.single("image"), async (req: Request, res: Response): Promise<any> => {
     try {
         const body = req.body
-        const data = await Book.create(body)
-        res.status(201).json({ success: true, message: "Book created successfully", data })
+        const imageFile = req.file
+        if (!imageFile) {
+            return res.status(400).json({
+                success: false,
+                message: "Image file is required"
+            });
+        }
+        const response = await imagekit.upload({
+            file: imageFile?.buffer,
+            fileName: imageFile?.originalname,
+            extensions: [
+                {
+                    name: "remove-bg",
+                    options: {
+                        bg_color: "transparent",
+                        add_shadow: false,            // whether to add shadow under the subject
+                        semitransparency: true,
+                    }
+                }
+            ]
+        })
+        console.log(response)
+        console.log(req.body)
+        // const data = await Book.create(body)
+        // res.status(201).json({ success: true, message: "Book created successfully", data })
     } catch (error: any) {
         console.log(error);
         const isDuplicateKey = error.code === 11000 || error?.cause?.code === 11000;;

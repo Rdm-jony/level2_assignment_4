@@ -7,6 +7,9 @@ export const AddBookFormShema = z.object({
     description: z.string().nonempty("description is required"),
     copies: z.coerce.number()
         .min(1, { message: "Copies is required" }),
+    image: z
+        .instanceof(File)
+        .refine(file => file.size > 0, { message: "Image is required" }),
     available: z.boolean().default(true).optional(),
     genre: z.enum(["FICTION",
         "NON_FICTION",

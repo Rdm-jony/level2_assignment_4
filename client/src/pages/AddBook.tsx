@@ -15,6 +15,8 @@ import {
 import { Input } from "@/components/ui/input"
 import { AddBookFormShema, type IBook } from "@/type/addBooks_type"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ImageUp } from "lucide-react"
+import { Label } from "@/components/ui/label"
 
 
 
@@ -31,6 +33,8 @@ export const AddBook = () => {
             available: true,
         },
     })
+    const bookImage = form.watch("image")
+
     function onSubmit(values: IBook) {
         console.log(values)
     }
@@ -38,6 +42,31 @@ export const AddBook = () => {
     return (
         <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-10">
+                <FormField
+                    control={form.control}
+                    name="image"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Upload book image</FormLabel>
+                            <FormControl>
+                                <Label htmlFor="image">
+                                    <div className="w-20 h-20 bg-gray-100 flex justify-center items-center">
+                                        {
+                                            bookImage ? <img className="object-cover w-full h-full" src={URL.createObjectURL(bookImage)} alt="" /> : <ImageUp />
+                                        }
+
+                                    </div>
+                                    <Input id="image" className="hidden" onChange={(e) => {
+                                        const file = e.target.files?.[0]
+                                        field.onChange(file)
+                                    }} type="file"
+                                        accept="image/*" />
+                                </Label>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
                 <FormField
                     control={form.control}
                     name="title"
