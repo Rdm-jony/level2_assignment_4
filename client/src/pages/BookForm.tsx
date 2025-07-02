@@ -17,49 +17,85 @@ import { AddBookFormShema, type IBook } from "@/type/addBooks_type"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ImageUp } from "lucide-react"
 import { Label } from "@/components/ui/label"
-import { useAddBookMutation, type IErrorResponse } from "@/redux/feature/book/bookApi"
+import { useAddBookMutation, useGetSingleBookQuery, useUpdateBookMutation, type IErrorResponse } from "@/redux/feature/book/bookApi"
 import { toast } from "sonner"
+import { useAppDispatch, useAppSelector } from "@/hooks/redux_hooks"
+import { closeModal, selectModalId } from "@/redux/modalSlice"
+import { useEffect } from "react"
 
 
 
-export const AddBook = () => {
+export const BookForm = () => {
+    const dispatch=useAppDispatch()
+    const bookId = useAppSelector(selectModalId)
+    const [updateBook] = useUpdateBookMutation()
+    const { data, isLoading } = useGetSingleBookQuery(bookId, { skip: !bookId })
+    const book = data?.data as IBook | undefined;
     const [addBook] = useAddBookMutation()
+
+
     const form = useForm<IBook>({
         resolver: zodResolver(AddBookFormShema),
         defaultValues: {
-            title: '',
-            author: '',
-            isbn: '',
-            description: '',
-            copies: 0,
-            genre: 'FICTION',
-            available: true,
+            title: book?.title || "",
+            author: book?.author || "",
+            isbn: book?.isbn || "",
+            description: book?.description || "",
+            copies: book?.copies || undefined,
+            genre: book?.genre || "FICTION",
+            available: book?.available ?? true,
+            image: book?.image || undefined,
         },
     })
 
-    
+    useEffect(() => {
+        if (book) {
+            form.reset({
+                title: book.title,
+                author: book.author,
+                isbn: book.isbn,
+                description: book.description,
+                copies: book.copies,
+                genre: book.genre,
+                available: book.available,
+                image: book.image, // this is only needed if you're storing file here
+            });
+        }
+    }, [book, form]);
 
     const bookImage = form.watch("image")
 
     async function onSubmit(values: IBook) {
-        const formdata = new FormData()
+        const formData = new FormData()
         for (const key in values) {
             const value = values[key as keyof typeof values]
             if (value instanceof File) {
-                formdata.append(key, value)
+                formData.append(key, value)
             } else {
-                formdata.append(key, String(value))
+                formData.append(key, String(value))
             }
         }
         try {
-            const response = await addBook(formdata).unwrap()
-            form.reset()
+            let response;
+            if (book && bookId) {
+                response = await updateBook({ bookId, formData }).unwrap()
+                dispatch(closeModal())
+            } else {
+                response = await addBook(formData).unwrap()
+                form.reset()
+            }
+
             toast.success(response.message)
+
         } catch (error: unknown) {
             const err = error as IErrorResponse
             toast.error(err?.data?.message)
         }
 
+    }
+
+    if (isLoading) {
+        return <p>loading.........</p>
     }
 
     return (
@@ -74,9 +110,15 @@ export const AddBook = () => {
                             <FormControl>
                                 <Label htmlFor="image">
                                     <div className="w-20 h-20 bg-gray-100 flex justify-center items-center">
-                                        {
-                                            bookImage ? <img className="object-cover w-full h-full" src={URL.createObjectURL(bookImage)} alt="" /> : <ImageUp />
-                                        }
+                                        {bookImage ? (
+                                            typeof bookImage === "string" ? (
+                                                <img className="object-cover w-full h-full" src={bookImage} alt="" />
+                                            ) : (
+                                                <img className="object-cover w-full h-full" src={URL.createObjectURL(bookImage)} alt="" />
+                                            )
+                                        ) : (
+                                            <ImageUp />
+                                        )}
 
                                     </div>
                                     <Input id="image" className="hidden" onChange={(e) => {

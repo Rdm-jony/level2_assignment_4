@@ -7,8 +7,8 @@ import { openModal } from "@/redux/modalSlice";
 
 const TableCardRow = ({ book }: { book: IBook }) => {
     const dispatch=useAppDispatch()
-   const handleModalTrigger=(type:string)=>{
-        dispatch(openModal(type))
+   const handleModalTrigger=(type:string,id:string)=>{
+        dispatch(openModal({type,id}))
     }
     return (
         <tr className="border-2">
@@ -24,7 +24,8 @@ const TableCardRow = ({ book }: { book: IBook }) => {
             <TableCell>{book.isbn}</TableCell>
             <TableCell>{book.copies}</TableCell>
             <TableCell> <div className="flex gap-2">
-                <Edit onClick={()=>handleModalTrigger("edit")} /> <Delete />
+                <Edit onClick={()=>handleModalTrigger("edit",book._id!)} /> 
+                <Delete onClick={()=>handleModalTrigger("delete",book._id!)}/>
             </div> </TableCell>
         </tr>
     );

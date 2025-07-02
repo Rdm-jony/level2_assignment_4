@@ -1,28 +1,29 @@
 import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
+    Dialog,
+    DialogContent,
 } from "@/components/ui/dialog"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux_hooks";
 import { closeModal, selectIsModalOpen, selectModalType } from "@/redux/modalSlice";
-import EditBook from "./EditBook";
+import DeleteBook from "./DeleteBook";
+import { BookForm } from "@/pages/BookForm";
 
 const GlobalModel = () => {
-    const dispatch=useAppDispatch()
-    const isOpen=useAppSelector(selectIsModalOpen)
-    const type=useAppSelector(selectModalType)
-    
-    const handleOnChange=()=>dispatch(closeModal())
+    const dispatch = useAppDispatch()
+    const isOpen = useAppSelector(selectIsModalOpen)
+    const type = useAppSelector(selectModalType)
 
-    let content:React.ReactNode=null
+    const handleOnChange = () => dispatch(closeModal())
 
-    if(isOpen && type=="edit"){
-       content= <EditBook/>
+    let content: React.ReactNode = null
+
+    if (isOpen && type == "edit") {
+        content = <BookForm />
+    } else if (isOpen && type == "delete") {
+        content = <DeleteBook />
     }
 
     return (
         <Dialog open={isOpen} onOpenChange={handleOnChange}>
-            <DialogTrigger>Open</DialogTrigger>
             <DialogContent>
                 {content}
             </DialogContent>

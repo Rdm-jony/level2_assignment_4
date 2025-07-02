@@ -1,4 +1,4 @@
-import express, { json, Request, Response } from "express"
+import express, { json, Request, response, Response } from "express"
 import { Book } from "../model/book_model"
 import { imagekit } from "../utils/imageKit"
 import upload from "../middleware/middleware"
@@ -26,7 +26,7 @@ bookRoutes.post("/", upload.single("image"), async (req: Request, res: Response)
             });
         }
 
-        const data = await Book.create({...body,image:response.url})
+        const data = await Book.create({ ...body, image: response.url })
         res.status(201).json({ success: true, message: "Book created successfully", data })
     } catch (error: any) {
         console.log(error);
@@ -82,12 +82,27 @@ bookRoutes.get("/:bookId", async (req: Request, res: Response) => {
     }
 })
 
-bookRoutes.put("/:bookId", async (req: Request, res: Response) => {
+bookRoutes.put("/:bookId",upload.single('image'), async (req: Request, res: Response):Promise<any> => {
     try {
         const bookId = req.params.bookId
         const body = req.body
+        const imageFile = req.file
+        let imageUrl=body.image
+        if (imageFile) {
+            const response = await imagekit.upload({
+                file: imageFile?.buffer,
+                fileName: imageFile?.originalname,
+            })
+            if (!response.url) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Image upload failed. No URL returned."
+                });
+            }
+            imageUrl=response.url
+        }
         const updateDoc = {
-            $set: body
+            $set: {...body,image:imageUrl,available:body.copies==0?false:true}
         }
         const data = await Book.findByIdAndUpdate(bookId, updateDoc, { new: true })
         res.status(200).json({ success: true, message: "Book updated successfully", data })

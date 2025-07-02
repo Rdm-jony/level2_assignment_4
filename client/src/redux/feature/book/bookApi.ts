@@ -18,6 +18,7 @@ export interface IErrorResponse {
 export const bookApi = createApi({
   reducerPath: 'bookApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/books' }),
+  tagTypes: ['book'],
   endpoints: (builder) => ({
     addBook: builder.mutation<IResponse, FormData>({
       query: (formData) => ({
@@ -26,12 +27,31 @@ export const bookApi = createApi({
         body: formData
       })
     }),
-    getAllBooks: builder.query<IBookReponse,void>({
-      query: () => '/'
+    getAllBooks: builder.query<IBookReponse, void>({
+      query: () => '/',
+      providesTags: ['book']
+    }),
+    deleteBooks: builder.mutation<IBookReponse, string>({
+      query: (bookId) => ({
+        url: `/${bookId}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['book']
+    }),
+    getSingleBook: builder.query<IBookReponse, string | undefined>({
+      query: (bookId) => `/${bookId}`
+    }),
+    updateBook: builder.mutation<IBookReponse, { bookId: string; formData: FormData }>({
+      query: ({ bookId, formData }) => ({
+        url: `/${bookId}`,
+        method: 'PUT',
+        body: formData
+      }),
+      invalidatesTags: ['book']
     })
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useAddBookMutation,useGetAllBooksQuery } = bookApi
+export const { useAddBookMutation, useGetAllBooksQuery, useDeleteBooksMutation, useGetSingleBookQuery, useUpdateBookMutation } = bookApi
