@@ -22,11 +22,12 @@ import { toast } from "sonner"
 import { useAppDispatch, useAppSelector } from "@/hooks/redux_hooks"
 import { closeModal, selectModalId } from "@/redux/modalSlice"
 import { useEffect } from "react"
+import { Textarea } from "@/components/ui/textarea"
 
 
 
 export const BookForm = () => {
-    const dispatch=useAppDispatch()
+    const dispatch = useAppDispatch()
     const bookId = useAppSelector(selectModalId)
     const [updateBook] = useUpdateBookMutation()
     const { data, isLoading } = useGetSingleBookQuery(bookId, { skip: !bookId })
@@ -99,130 +100,140 @@ export const BookForm = () => {
     }
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-10">
-                <FormField
-                    control={form.control}
-                    name="image"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Upload book image</FormLabel>
-                            <FormControl>
-                                <Label htmlFor="image">
-                                    <div className="w-20 h-20 bg-gray-100 flex justify-center items-center">
-                                        {bookImage ? (
-                                            typeof bookImage === "string" ? (
-                                                <img className="object-cover w-full h-full" src={bookImage} alt="" />
-                                            ) : (
-                                                <img className="object-cover w-full h-full" src={URL.createObjectURL(bookImage)} alt="" />
-                                            )
-                                        ) : (
-                                            <ImageUp />
-                                        )}
+        <div>
+            <h1 className="font-semibold text-2xl text-center my-10">{bookId ? "Edit Existing" : 'Add New'} book</h1>
 
-                                    </div>
-                                    <Input id="image" className="hidden" onChange={(e) => {
-                                        const file = e.target.files?.[0]
-                                        field.onChange(file)
-                                    }} type="file"
-                                        accept="image/*" />
-                                </Label>
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="title"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Title</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="author"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Author</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="genre"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Select Genre</FormLabel>
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-10 border-2 p-5">
+
+                    <FormField
+                        control={form.control}
+                        name="image"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Upload book image</FormLabel>
                                 <FormControl>
-                                    <SelectTrigger className="w-full">
-                                        <SelectValue placeholder="Select genre" />
-                                    </SelectTrigger>
+                                    <Label className="w-20 h-20" htmlFor="image">
+                                        <div className="w-full h-full bg-gray-100 flex justify-center items-center">
+                                            {bookImage ? (
+                                                typeof bookImage === "string" ? (
+                                                    <img className="object-cover w-full h-full" src={bookImage} alt="" />
+                                                ) : (
+                                                    <img className="object-cover w-full h-full" src={URL.createObjectURL(bookImage)} alt="" />
+                                                )
+                                            ) : (
+                                                <ImageUp />
+                                            )}
+
+                                        </div>
+                                        <Input id="image" className="hidden" onChange={(e) => {
+                                            const file = e.target.files?.[0]
+                                            field.onChange(file)
+                                        }} type="file"
+                                            accept="image/*" />
+                                    </Label>
                                 </FormControl>
-                                <SelectContent  >
-                                    <SelectItem value="FICTION">FICTION</SelectItem>
-                                    <SelectItem value="NON_FICTION">NON_FICTION</SelectItem>
-                                    <SelectItem value="HISTORY">HISTORY</SelectItem>
-                                    <SelectItem value="BIOGRAPHY">BIOGRAPHY</SelectItem>
-                                    <SelectItem value="FANTASY">FANTASY</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="isbn"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Isbn</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="copies"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Copies</FormLabel>
-                            <FormControl>
-                                <Input type="number" placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Description</FormLabel>
-                            <FormControl>
-                                <Input placeholder="shadcn" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <Button type="submit">Submit</Button>
-            </form>
-        </Form>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Title</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="shadcn" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="author"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Author</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="shadcn" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="genre"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Select Genre</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <FormControl>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Select genre" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent  >
+                                        <SelectItem value="FICTION">FICTION</SelectItem>
+                                        <SelectItem value="NON_FICTION">NON_FICTION</SelectItem>
+                                        <SelectItem value="HISTORY">HISTORY</SelectItem>
+                                        <SelectItem value="BIOGRAPHY">BIOGRAPHY</SelectItem>
+                                        <SelectItem value="FANTASY">FANTASY</SelectItem>
+                                    </SelectContent>
+                                </Select>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="isbn"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Isbn</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="shadcn" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="copies"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Copies</FormLabel>
+                                <FormControl>
+                                    <Input type="number" placeholder="shadcn" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                            <FormItem className="col-span-2">
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Tell us a little bit about book"
+                                        className="resize-none"
+                                        {...field}
+                                    />
+                                </FormControl>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                    <Button className="col-span-2" type="submit">Submit</Button>
+
+                </form>
+            </Form>
+        </div>
     )
 }

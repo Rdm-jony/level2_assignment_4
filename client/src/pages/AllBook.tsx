@@ -1,7 +1,6 @@
 import {
     Table,
     TableBody,
-    TableCaption,
     TableHead,
     TableHeader,
     TableRow,
@@ -12,33 +11,34 @@ import BookRowCard from "../component/BookRowCard";
 
 const AllBook = () => {
     const { data, isLoading } = useGetAllBooksQuery()
-    console.log(data)
     if (isLoading) {
         return <p>Lodading.........</p>
     }
 
     return (
-        <Table>
-            <TableCaption>A list of your recent invoices.</TableCaption>
-            <TableHeader>
-                <TableRow>
-                    <TableHead >Image</TableHead>
-                    <TableHead >Title</TableHead>
-                    <TableHead>Author</TableHead>
-                    <TableHead>Genre</TableHead>
-                    <TableHead >ISBN</TableHead>
-                    <TableHead >Copies</TableHead>
-                    <TableHead >Actions</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {
-                    Array.isArray(data?.data) && data.data.map((book: IBook) => (
-                        <BookRowCard key={book._id} book={book} />
-                    ))
-                }
-            </TableBody>
-        </Table>
+        <div>
+            <h1 className="font-semibold text-2xl text-center my-10">All Books</h1>
+            <Table className="border-2">
+                <TableHeader>
+                    <TableRow>
+                        <TableHead >Image</TableHead>
+                        <TableHead >Title</TableHead>
+                        <TableHead>Author</TableHead>
+                        <TableHead>Genre</TableHead>
+                        <TableHead >ISBN</TableHead>
+                        <TableHead >Copies</TableHead>
+                        <TableHead className="text-center">Actions</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {
+                        Array.isArray(data?.data) && data.data.map((book: IBook) => (
+                            <BookRowCard key={book._id} book={book} />
+                        ))
+                    }
+                </TableBody>
+            </Table>
+        </div>
     );
 };
 

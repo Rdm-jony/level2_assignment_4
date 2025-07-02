@@ -26,7 +26,7 @@ const GlobalModel = () => {
     }
 
     return (
-        <Dialog open={isOpen} onOpenChange={handleOnChange}>
+        <Dialog open={isOpen} onOpenChange={handleOnChange} >
             <DialogContent>
                 {content}
             </DialogContent>
