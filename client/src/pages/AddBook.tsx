@@ -36,6 +36,9 @@ export const AddBook = () => {
             available: true,
         },
     })
+
+    
+
     const bookImage = form.watch("image")
 
     async function onSubmit(values: IBook) {

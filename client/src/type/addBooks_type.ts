@@ -19,4 +19,10 @@ export const AddBookFormShema = z.object({
         "FANTASY"], { required_error: 'genre is required' })
 })
 
-export type IBook = z.infer<typeof AddBookFormShema>
+export type IBook = z.infer<typeof AddBookFormShema> & {_id?:string}
+
+export type IBookReponse={
+    success:boolean,
+    message:string,
+    data:IBook[] | IBook
+}

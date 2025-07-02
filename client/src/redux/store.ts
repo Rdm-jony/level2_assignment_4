@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { bookApi } from './feature/book/bookApi'
+import modalReducer from '@/redux/modalSlice'
 
 
 export const store = configureStore({
     reducer: {
+        modal:modalReducer,
         [bookApi.reducerPath]: bookApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>

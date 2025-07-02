@@ -1,4 +1,5 @@
 // Need to use the React-specific entry point to import createApi
+import type { IBookReponse } from '@/type/addBooks_type';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 interface IResponse {
@@ -24,10 +25,13 @@ export const bookApi = createApi({
         method: 'Post',
         body: formData
       })
+    }),
+    getAllBooks: builder.query<IBookReponse,void>({
+      query: () => '/'
     })
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useAddBookMutation } = bookApi
+export const { useAddBookMutation,useGetAllBooksQuery } = bookApi
