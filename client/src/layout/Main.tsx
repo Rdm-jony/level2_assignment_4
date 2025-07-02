@@ -1,4 +1,5 @@
 import Footer from "@/component/Footer";
+import GlobalModel from "@/component/GlobalModel";
 import Navbar from "@/component/Navbar";
 import { Outlet } from "react-router";
 
@@ -10,6 +11,7 @@ const Main = () => {
                 <Outlet />
             </div>
             <Footer />
+            <GlobalModel />
         </>
     );
 };

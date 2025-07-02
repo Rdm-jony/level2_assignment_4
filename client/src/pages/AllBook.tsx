@@ -6,9 +6,9 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import TableCardRow from "../component/TableCardRow";
 import { useGetAllBooksQuery } from "@/redux/feature/book/bookApi";
 import type { IBook } from "@/type/addBooks_type";
+import BookRowCard from "../component/BookRowCard";
 
 const AllBook = () => {
     const { data, isLoading } = useGetAllBooksQuery()
@@ -34,7 +34,7 @@ const AllBook = () => {
             <TableBody>
                 {
                     Array.isArray(data?.data) && data.data.map((book: IBook) => (
-                        <TableCardRow key={book._id} book={book} />
+                        <BookRowCard key={book._id} book={book} />
                     ))
                 }
             </TableBody>

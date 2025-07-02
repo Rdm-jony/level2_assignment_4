@@ -1,15 +1,20 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { bookApi } from './feature/book/bookApi'
+import { borrowApi } from './feature/borrow/borrowApi'
 import modalReducer from '@/redux/modalSlice'
 
 
 export const store = configureStore({
     reducer: {
-        modal:modalReducer,
+        modal: modalReducer,
         [bookApi.reducerPath]: bookApi.reducer,
+        [borrowApi.reducerPath]: borrowApi.reducer,
+
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(bookApi.middleware),
+        getDefaultMiddleware()
+            .concat(bookApi.middleware)
+            .concat(borrowApi.middleware),
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

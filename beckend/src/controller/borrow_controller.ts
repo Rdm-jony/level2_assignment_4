@@ -69,7 +69,8 @@ borrowRoutes.get("/", async (req: Request, res: Response) => {
                 $group: {
                     _id: {
                         title: "$book.title",
-                        isbn: "$book.isbn"
+                        isbn: "$book.isbn",
+                        image: "$book.image"
                     }, totalQuantity: { $sum: "$quantity" }
                 }
             },
@@ -78,7 +79,9 @@ borrowRoutes.get("/", async (req: Request, res: Response) => {
                     _id: 0,
                     book: {
                         title: "$_id.title",
-                        isbn: "$_id.isbn"
+                        isbn: "$_id.isbn",
+                        image: "$_id.image",
+
                     },
                     totalQuantity: 1
                 }

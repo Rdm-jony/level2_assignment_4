@@ -3,7 +3,6 @@ import { router } from './routes/routes'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
 import { Toaster } from 'sonner'
-import GlobalModel from './component/GlobalModel'
 
 function App() {
 
@@ -12,7 +11,7 @@ function App() {
       <Provider store={store}>
         <RouterProvider router={router} />
         <Toaster/>
-        <GlobalModel/>
+       
       </Provider>
     </>
   )

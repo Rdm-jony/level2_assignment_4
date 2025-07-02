@@ -3,6 +3,7 @@ import { BookForm } from "@/pages/BookForm";
 import AllBook from "@/pages/AllBook";
 import Home from "@/pages/Home";
 import { createBrowserRouter } from "react-router";
+import Summery from "@/pages/Summery";
 
 export const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ export const router = createBrowserRouter([
       {
         path: "/allBook",
         element: <AllBook />
+      },
+      {
+        path: "/summery",
+        element: <Summery />
       }
     ]
   },

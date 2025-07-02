@@ -1,0 +1,27 @@
+// Need to use the React-specific entry point to import createApi
+import type { IBorrowReponse } from '@/type/borrow_type'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+
+// Define a service using a base URL and expected endpoints
+export const borrowApi = createApi({
+    reducerPath: 'borrowApi',
+    baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/borrow' }),
+    tagTypes: ['book'],
+    endpoints: (builder) => ({
+        borrowBook: builder.mutation<IBorrowReponse, { book: string, quantity: number, dueDate: Date }>({
+            query: (formData) => ({
+                url: '/',
+                method: 'POST',
+                body: formData
+            }),
+            invalidatesTags: ['book']
+        }),
+        getBorrowSummery:builder.query<IBorrowReponse,void>({
+            query:()=>'/'
+        })
+    }),
+})
+
+// Export hooks for usage in functional components, which are
+// auto-generated based on the defined endpoints
+export const { useBorrowBookMutation,useGetBorrowSummeryQuery} = borrowApi

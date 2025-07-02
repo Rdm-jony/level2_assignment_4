@@ -1,11 +1,11 @@
 import { TableCell } from "@/components/ui/table"
 import type { IBook } from "@/type/addBooks_type";
-import { Delete, Edit } from "lucide-react";
+import { Delete, Edit, Save } from "lucide-react";
 import { cn } from '@/lib/utils';
 import { useAppDispatch } from "@/hooks/redux_hooks";
 import { openModal } from "@/redux/modalSlice";
 
-const TableCardRow = ({ book }: { book: IBook }) => {
+const BookRowCard = ({ book }: { book: IBook }) => {
     const dispatch=useAppDispatch()
    const handleModalTrigger=(type:string,id:string)=>{
         dispatch(openModal({type,id}))
@@ -26,9 +26,10 @@ const TableCardRow = ({ book }: { book: IBook }) => {
             <TableCell> <div className="flex gap-2">
                 <Edit onClick={()=>handleModalTrigger("edit",book._id!)} /> 
                 <Delete onClick={()=>handleModalTrigger("delete",book._id!)}/>
+                <Save onClick={()=>handleModalTrigger("borrow",book._id!)} />
             </div> </TableCell>
         </tr>
     );
 };
 
-export default TableCardRow;
+export default BookRowCard;
