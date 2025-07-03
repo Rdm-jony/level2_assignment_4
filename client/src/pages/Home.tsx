@@ -1,9 +1,12 @@
+import Hero from "@/components/Hero";
+import TopCategories from "@/components/TopCategories";
 
 const Home = () => {
     return (
-        <div>
-            
-        </div>
+        <>
+            <Hero />
+            <TopCategories />
+        </>
     );
 };
 

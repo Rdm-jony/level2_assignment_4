@@ -13,7 +13,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { AddBookFormShema, type IBook } from "@/type/addBooks_type"
+import { AddBookFormShema, type IBook } from "@/type/book_type"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ImageUp } from "lucide-react"
 import { Label } from "@/components/ui/label"
@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux_hooks"
 import { closeModal, selectModalId } from "@/redux/modalSlice"
 import { useEffect } from "react"
 import { Textarea } from "@/components/ui/textarea"
+import Loader from "@/components/Loader"
 
 
 
@@ -96,15 +97,15 @@ export const BookForm = () => {
     }
 
     if (isLoading) {
-        return <p>loading.........</p>
+        return <Loader />
     }
 
     return (
         <div>
-            <h1 className="font-semibold text-2xl text-center my-10">{bookId ? "Edit Existing" : 'Add New'} book</h1>
+            <h1 className="font-semibold text-2xl text-center py-10">{bookId ? "Edit Existing" : 'Add New'} book</h1>
 
             <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-10 border-2 p-5">
+                <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-2 gap-10 border-2 p-5 max-w-6xl mx-auto dark:bg-gray-900 bg-white">
 
                     <FormField
                         control={form.control}
@@ -114,7 +115,7 @@ export const BookForm = () => {
                                 <FormLabel>Upload book image</FormLabel>
                                 <FormControl>
                                     <Label className="w-20 h-20" htmlFor="image">
-                                        <div className="w-full h-full bg-gray-100 flex justify-center items-center">
+                                        <div className="w-full h-full dark:bg-gray-800 bg-gray-100 flex justify-center items-center">
                                             {bookImage ? (
                                                 typeof bookImage === "string" ? (
                                                     <img className="object-cover w-full h-full" src={bookImage} alt="" />

@@ -2,11 +2,13 @@ import { configureStore } from '@reduxjs/toolkit'
 import { bookApi } from './feature/book/bookApi'
 import { borrowApi } from './feature/borrow/borrowApi'
 import modalReducer from '@/redux/modalSlice'
+import filterReducer from '@/redux/filterSlice'
 
 
 export const store = configureStore({
     reducer: {
         modal: modalReducer,
+        filter:filterReducer,
         [bookApi.reducerPath]: bookApi.reducer,
         [borrowApi.reducerPath]: borrowApi.reducer,
 

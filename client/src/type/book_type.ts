@@ -33,3 +33,10 @@ export type IBookReponse = {
     data: IBook[] | IBook
 }
 
+export interface IFliter {
+    filter: string,
+    sortBy: 'asc' | 'desc',
+    sort: string,
+    limit: string,
+
+}

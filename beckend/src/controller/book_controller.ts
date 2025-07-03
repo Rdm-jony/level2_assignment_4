@@ -52,7 +52,7 @@ bookRoutes.get("/", async (req: Request, res: Response): Promise<any> => {
         const sort = req.query.sort as string
         const limit = req.query.limit as string
         const sortField = sort == "asc" ? 1 : -1
-        const data = await Book.find(filter ? { genre: filter } : {}).sort({ [sortBy]: sortField }).limit(Number(limit ?? 10))
+        const data = await Book.find(filter ? { genre: filter } : {}).sort({ [sortBy]: sortField }).limit(Number(limit))
         res.status(200).json({ success: true, message: "Books retrieved successfully", data })
     } catch (error: any) {
         console.log(error)
@@ -65,29 +65,14 @@ bookRoutes.get("/", async (req: Request, res: Response): Promise<any> => {
     }
 })
 
-bookRoutes.get("/:bookId", async (req: Request, res: Response) => {
-    try {
-        const bookId = req.params.bookId
-        const data = await Book.findById(bookId)
-        res.status(200).json({ success: true, message: "Books retrieved successfully", data })
 
-    } catch (error: any) {
-        console.log(error)
-        res.status(500).json({
-            success: false, message: error.name, error: {
-                name: error.name,
-                errors: error.errors
-            }
-        })
-    }
-})
 
-bookRoutes.put("/:bookId",upload.single('image'), async (req: Request, res: Response):Promise<any> => {
+bookRoutes.put("/:bookId", upload.single('image'), async (req: Request, res: Response): Promise<any> => {
     try {
         const bookId = req.params.bookId
         const body = req.body
         const imageFile = req.file
-        let imageUrl=body.image
+        let imageUrl = body.image
         if (imageFile) {
             const response = await imagekit.upload({
                 file: imageFile?.buffer,
@@ -99,10 +84,10 @@ bookRoutes.put("/:bookId",upload.single('image'), async (req: Request, res: Resp
                     message: "Image upload failed. No URL returned."
                 });
             }
-            imageUrl=response.url
+            imageUrl = response.url
         }
         const updateDoc = {
-            $set: {...body,image:imageUrl,available:body.copies==0?false:true}
+            $set: { ...body, image: imageUrl, available: body.copies == 0 ? false : true }
         }
         const data = await Book.findByIdAndUpdate(bookId, updateDoc, { new: true })
         res.status(200).json({ success: true, message: "Book updated successfully", data })
@@ -130,6 +115,51 @@ bookRoutes.delete("/:bookId", async (req: Request, res: Response): Promise<any> 
             return res.status(200).json({ success: true, message: "Book deleted successfully", data: null })
         }
         res.status(200).json({ success: false, message: "Book not found" })
+
+    } catch (error: any) {
+        console.log(error)
+        res.status(500).json({
+            success: false, message: error.name, error: {
+                name: error.name,
+                errors: error.errors
+            }
+        })
+    }
+})
+
+bookRoutes.get("/categories", async (req: Request, res: Response): Promise<any> => {
+    try {
+        const data = await Book.aggregate([
+            {
+                $group: {
+                    _id: "$genre",
+                    img: { $first: "$image" }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    genre: "$_id",
+                    img: 1
+                }
+            }
+        ]);
+        res.status(200).json({ success: true, data });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false, message: error.name, error: {
+                name: error.name,
+                errors: error.errors
+            }
+        })
+    }
+})
+
+bookRoutes.get("/:bookId", async (req: Request, res: Response) => {
+    try {
+        const bookId = req.params.bookId
+        const data = await Book.findById(bookId)
+        res.status(200).json({ success: true, message: "Books retrieved successfully", data })
 
     } catch (error: any) {
         console.log(error)

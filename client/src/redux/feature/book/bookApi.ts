@@ -1,5 +1,5 @@
 // Need to use the React-specific entry point to import createApi
-import type { IBookReponse } from '@/type/addBooks_type';
+import type { IBookReponse, IFliter } from '@/type/book_type';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 interface IResponse {
@@ -18,7 +18,7 @@ export interface IErrorResponse {
 export const bookApi = createApi({
   reducerPath: 'bookApi',
   baseQuery: fetchBaseQuery({ baseUrl: 'http://localhost:5000/api/books' }),
-  tagTypes: ['book'],
+  tagTypes: ['book', 'borrow'],
   endpoints: (builder) => ({
     addBook: builder.mutation<IResponse, FormData>({
       query: (formData) => ({
@@ -27,8 +27,17 @@ export const bookApi = createApi({
         body: formData
       })
     }),
-    getAllBooks: builder.query<IBookReponse, void>({
-      query: () => '/',
+    getAllBooks: builder.query<IBookReponse, IFliter>({
+      query: (params) => {
+        const query = new URLSearchParams();
+
+        if (params?.filter) query.set('filter', params.filter);
+        if (params?.sort) query.set('sort', params.sort);
+        if (params?.sortBy) query.set('sortBy', params.sortBy);
+        if (params?.limit) query.set('limit', params.limit.toString());
+
+        return `/?${query.toString()}`;
+      },
       providesTags: ['book']
     }),
     deleteBooks: builder.mutation<IBookReponse, string>({
@@ -36,7 +45,7 @@ export const bookApi = createApi({
         url: `/${bookId}`,
         method: 'DELETE'
       }),
-      invalidatesTags: ['book']
+      invalidatesTags: ['book', 'borrow']
     }),
     getSingleBook: builder.query<IBookReponse, string | undefined>({
       query: (bookId) => `/${bookId}`
@@ -48,10 +57,13 @@ export const bookApi = createApi({
         body: formData
       }),
       invalidatesTags: ['book']
+    }),
+    getCategories: builder.query<{ success: boolean, data: { genre: string, img: string }[] }, void>({
+      query: () => `/categories`
     })
   }),
 })
 
 // Export hooks for usage in functional components, which are
 // auto-generated based on the defined endpoints
-export const { useAddBookMutation, useGetAllBooksQuery, useDeleteBooksMutation, useGetSingleBookQuery, useUpdateBookMutation } = bookApi
+export const { useAddBookMutation, useGetAllBooksQuery, useDeleteBooksMutation, useGetSingleBookQuery, useUpdateBookMutation, useGetCategoriesQuery } = bookApi

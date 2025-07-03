@@ -1,0 +1,1 @@
+export const genre:string[]=["All","FICTION","NON_FICTION","SCIENCE","HISTORY","BIOGRAPHY","FANTASY"]

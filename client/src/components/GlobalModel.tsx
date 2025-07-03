@@ -7,6 +7,7 @@ import { closeModal, selectIsModalOpen, selectModalType } from "@/redux/modalSli
 import DeleteBook from "./DeleteBook";
 import { BookForm } from "@/pages/BookForm";
 import BorrowForm from "./BorrowForm";
+import BookDetails from "./BookDetails";
 
 const GlobalModel = () => {
     const dispatch = useAppDispatch()
@@ -23,11 +24,13 @@ const GlobalModel = () => {
         content = <DeleteBook />
     } else if (isOpen && type == 'borrow') {
         content = <BorrowForm />
+    } else if (isOpen && type == 'details') {
+        content = <BookDetails />
     }
 
     return (
         <Dialog open={isOpen} onOpenChange={handleOnChange} >
-            <DialogContent>
+            <DialogContent className="dark:bg-gray-900">
                 {content}
             </DialogContent>
         </Dialog>
