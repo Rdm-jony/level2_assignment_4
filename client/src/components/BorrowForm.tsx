@@ -29,6 +29,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/redux_hooks"
 import { toast } from "sonner"
 import type { IErrorResponse } from "@/redux/feature/book/bookApi"
 import { useNavigate } from "react-router"
+import BtnLoader from "./BtnLoader"
 
 const FormSchema = z.object({
     dueDate: z.date({
@@ -41,9 +42,9 @@ const FormSchema = z.object({
 })
 
 function BorrowForm() {
-    const navigate= useNavigate()
+    const navigate = useNavigate()
     const disPatch = useAppDispatch()
-    const [borrowBook] = useBorrowBookMutation()
+    const [borrowBook, { isLoading: isBtnLoading }] = useBorrowBookMutation()
     const bookId = useAppSelector(selectModalId)
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -127,7 +128,10 @@ function BorrowForm() {
                         </FormItem>
                     )}
                 />
-                <Button type="submit">Submit</Button>
+                {
+                    isBtnLoading ? <BtnLoader /> : <Button type="submit">Submit</Button>
+                }
+
             </form>
         </Form>
     )

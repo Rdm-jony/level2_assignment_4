@@ -114,7 +114,7 @@ The **Borrow** model tracks the borrowing records of books:
 
 
 ### 🌐 Live Demo:
-🔗 https://librarymanagementexpress.vercel.app/
+🔗 https://librarybeckend.vercel.app/
 
 _ _ _
 ## 📘 API Endpoints

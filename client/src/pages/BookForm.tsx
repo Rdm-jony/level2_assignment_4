@@ -24,16 +24,17 @@ import { closeModal, selectModalId } from "@/redux/modalSlice"
 import { useEffect } from "react"
 import { Textarea } from "@/components/ui/textarea"
 import Loader from "@/components/Loader"
+import BtnLoader from "@/components/BtnLoader"
 
 
 
 export const BookForm = () => {
     const dispatch = useAppDispatch()
     const bookId = useAppSelector(selectModalId)
-    const [updateBook] = useUpdateBookMutation()
+    const [updateBook, { isLoading: isBtnLoading }] = useUpdateBookMutation()
     const { data, isLoading } = useGetSingleBookQuery(bookId, { skip: !bookId })
     const book = data?.data as IBook | undefined;
-    const [addBook] = useAddBookMutation()
+    const [addBook,{ isLoading: isBtnLoadingUpdate }] = useAddBookMutation()
 
 
     const form = useForm<IBook>({
@@ -43,7 +44,7 @@ export const BookForm = () => {
             author: book?.author || "",
             isbn: book?.isbn || "",
             description: book?.description || "",
-            copies: book?.copies || undefined,
+            copies: book?.copies || 0,
             genre: book?.genre || "FICTION",
             available: book?.available ?? true,
             image: book?.image || undefined,
@@ -231,7 +232,10 @@ export const BookForm = () => {
                             </FormItem>
                         )}
                     />
-                    <Button className="col-span-2" type="submit">Submit</Button>
+                    {
+                        isBtnLoading || isBtnLoadingUpdate ? <BtnLoader  /> : <Button className="col-span-2" type="submit">Submit</Button>
+                    }
+
 
                 </form>
             </Form>

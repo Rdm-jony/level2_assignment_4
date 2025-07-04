@@ -17,7 +17,7 @@ export interface IErrorResponse {
 // Define a service using a base URL and exppected endpoints
 export const bookApi = createApi({
   reducerPath: 'bookApi',
-  baseQuery: fetchBaseQuery({ baseUrl: 'https://librarymanagementexpress.vercel.app/api/books' }),
+  baseQuery: fetchBaseQuery({ baseUrl: 'https://librarybeckend.vercel.app/api/books' }),
   tagTypes: ['book', 'borrow'],
   endpoints: (builder) => ({
     addBook: builder.mutation<IResponse, FormData>({

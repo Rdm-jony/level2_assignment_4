@@ -37,16 +37,38 @@ borrowRoutes.post("/", async (req: Request, res: Response): Promise<any> => {
 
     } catch (error: any) {
         console.log(error)
-        const isDuplicateKey = error.code === 11000 || error?.cause?.code === 11000;;
-        res.status(isDuplicateKey ? 409 : 500).json({
-            success: false,
-            message: error.name || "InternalServerError",
-            error: {
-                name: error.name || "Error",
-                errors: isDuplicateKey ? error.errorResponse ?? error.cause.errorResponse :
-                    error.errors || "Something went wrong"
+        if (error.code === 11000) {
+            const field = Object.keys(error.keyValue)[0];
+            return res.status(400).json({
+                success: false,
+                message: "Validation Error",
+                errors: [
+                    {
+                        field,
+                        message: `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`
+                    }
+                ]
+            });
+        }
 
-            }
+        // 🔴 Mongoose Validation Error
+        if (error.name === "ValidationError") {
+            const errors = Object.keys(error.errors).map((field) => ({
+                field,
+                message: error.errors[field].message
+            }));
+
+            return res.status(400).json({
+                success: false,
+                message: "Validation Error",
+                errors
+            });
+        }
+
+        // ⚫ Generic Server Error
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Something went wrong"
         });
     }
 })
